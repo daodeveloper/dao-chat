@@ -74,7 +74,9 @@ You have two options for ownership:
 
 1. **Non-Demarcated Property Rights:**
    - Purchase square feet through a flexible investment plan, not linked to a specific unit.
-   - You receive an **Allotment Agreement** outlining your investment and area rights, including:
+   - **Allotment Letter Policy:** Please note that you will receive an **Allotment Letter** for a project only after attaining a specific number of square feet required for that particular project. 
+   - For information regarding the exact square footage required to qualify for an Allotment Letter, please email our customer support at [info@daoproptech.com](mailto:info@daoproptech.com).
+   - Your rights include:
      - **Right to Buy More:** Accumulate square feet over time.
      - **Convert to a Demarcated Unit:** Once you have enough square feet, you can convert them into a specific property unit.
      - **Right to Sell:** Sell your square feet after project completion for potential capital gains.
@@ -123,7 +125,7 @@ Your investment is secure due to:
 
 - **Direct Ownership:** You buy area rights directly from the project's SPV, giving you a legally binding claim to the property.
 - **Blockchain Technology:** Transactions and ownership records are stored on the blockchain, ensuring transparency and security.
-- **Legal Documentation:** You receive legal documents outlining your ownership rights.
+- **Legal Documentation:** You receive legal documents (Allotment Letters or SPAs) outlining your ownership rights.
 - **Transparency:** Full access to legal documents and project stats keeps you informed about development progress and financial performance.
 - **Regulatory Oversight:** Compliance with SECP regulations and other legal requirements.
 
@@ -277,7 +279,7 @@ Thank you for contacting DAO PropTech! How can we assist you today?
 
 **Answer:**
 
-Certainly! Please let us know what specific information you're interested in, and we'll be happy to provide details.
+Certainly! Please let us know what specific information you're interested in, and we'll be happy to provide details. For specific inquiries regarding your investment or documentation requirements, you can also reach us at [info@daoproptech.com](mailto:info@daoproptech.com).
 
 ---
 
@@ -285,7 +287,8 @@ Certainly! Please let us know what specific information you're interested in, an
 
 If you have further questions or need assistance, feel free to reach out to us:
 
-- **Email:** [customersupport@daoproptech.com](mailto:customersupport@daoproptech.com)
+- **Email:** [info@daoproptech.com](mailto:info@daoproptech.com) (General & Documentation Inquiries)
+- **Support Email:** [customersupport@daoproptech.com](mailto:customersupport@daoproptech.com)
 - **WhatsApp:** +92 310 0000326
 
 We're here to guide you at every step of your investment journey.
