@@ -72,7 +72,7 @@ def analyze_document_quality(docs: List[Document]) -> Dict:
 
 def main(verify_only=False, force_rebuild=False):
     processor = DocumentProcessor()
-    data_dir = Path("backend/data")
+    data_dir = Path(Config.DOCUMENTS_PATH)
     index_path = Path(Config.FAISS_INDEX_PATH)
     
     try:
