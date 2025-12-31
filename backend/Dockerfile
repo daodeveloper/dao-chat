@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM python:3.9
 
 WORKDIR /app
@@ -9,9 +10,11 @@ ENV PIP_CACHE_DIR=/root/.cache/pip
 # This layer will be cached unless requirements.txt changes
 COPY requirements.txt .
 
-# Install dependencies with pip cache enabled
-# Docker will cache this layer if requirements.txt hasn't changed
-RUN pip install --cache-dir=/root/.cache/pip -r requirements.txt
+# Install dependencies with BuildKit cache mount for persistent pip cache
+# This cache persists between builds, dramatically speeding up subsequent deployments
+# The --mount=type=cache creates a persistent cache that survives container rebuilds
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --cache-dir=/root/.cache/pip -r requirements.txt
 
 # Create directories
 RUN mkdir -p /app/data/faiss_index
