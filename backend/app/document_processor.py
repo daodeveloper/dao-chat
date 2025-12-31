@@ -7,15 +7,6 @@ from pathlib import Path
 import logging
 import os
 from .config import Config
-from unstructured_ingest.v2.pipeline.pipeline import Pipeline
-from unstructured_ingest.v2.interfaces import ProcessorConfig
-from unstructured_ingest.v2.processes.partitioner import PartitionerConfig
-from unstructured_ingest.v2.processes.connectors.local import (
-    LocalIndexerConfig,
-    LocalDownloaderConfig,
-    LocalConnectionConfig,
-    LocalUploaderConfig
-)
 import requests
 import PyPDF2
 from requests.adapters import HTTPAdapter
