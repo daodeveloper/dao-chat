@@ -30,6 +30,7 @@ from async_lru import alru_cache
 # Configuration
 from .config import Config
 from .prompts import get_system_prompt
+from .providers import get_chat_llm, get_embeddings
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -67,24 +68,13 @@ class RAG:
             # Define system message
             self.system_message = get_system_prompt(Config.SIGNUP_URL)
 
-            self.embeddings = OpenAIEmbeddings()
+            self.embeddings = get_embeddings()
             self.vectordb = self._load_vectordb()
 
             # Initialize LLMs with proper configurations for gpt-4o-mini
-            self.llm = ChatOpenAI(
-                temperature=0,
-                model_name=model_name,
-                streaming=False,
-                max_tokens=self.max_output_tokens,
-            )
+            self.llm = get_chat_llm(streaming=False)
 
-            self.streaming_llm = ChatOpenAI(
-                temperature=0,
-                model_name=model_name,
-                streaming=True,
-                max_tokens=self.max_output_tokens,
-                request_timeout=60,
-            )
+            self.streaming_llm = get_chat_llm(streaming=True)
 
             # Add a lock for thread-safe session management
             self._session_lock = asyncio.Lock()
