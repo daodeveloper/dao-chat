@@ -13,3 +13,7 @@ class Config:
     WATI_SHARED_SECRET = os.getenv("WATI_SHARED_SECRET", "")
     WEB_SEARCH_ENABLED = os.getenv("WEB_SEARCH_ENABLED", "true").lower() == "true"
     TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
+    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "google")               # google | openai
+    EMBEDDINGS_PROVIDER = os.getenv("EMBEDDINGS_PROVIDER", "openai")  # openai | google
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
