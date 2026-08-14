@@ -1,5 +1,6 @@
 # Build stage
-FROM node:20 as build
+FROM node:20 AS build
+ENV CI=false
 
 WORKDIR /app
 
