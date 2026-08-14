@@ -413,6 +413,9 @@ Please provide a clear, specific answer focusing on the relevant details.""")
             memory.chat_memory.add_user_message(question)
             memory.chat_memory.add_ai_message(full_response)
 
+            if not Config.USE_DB:
+                return
+
             async with self.db_session() as session:
                 try:
                     # Verify session exists and update last activity
