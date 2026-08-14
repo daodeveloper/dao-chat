@@ -101,5 +101,7 @@ urllib3==2.2.3
 uvicorn==0.30.6
 wrapt==1.16.0
 yarl==1.11.1
-ddgs
+duckduckgo-search
 tavily-python
+langchain-google-genai
+python-frontmatter
