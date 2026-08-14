@@ -29,6 +29,7 @@ from async_lru import alru_cache
 
 # Configuration
 from .config import Config
+from .prompts import get_system_prompt
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -64,80 +65,7 @@ class RAG:
             self.max_output_tokens = 16000  # 16K output tokens
 
             # Define system message
-            self.system_message = """You are DAO Proptech's expert AI investment advisor, specializing in real estate investment opportunities. You combine the precision of a wealth manager with the warmth of a trusted advisor.
-
-            **Investment Portfolio:**
-
-            1. Urban Dwellings (Bahria Garden City, Rawalpindi)
-            - Mixed-Use | Completion: 2028 | ROI: 30-40% annually
-            - First tokenized underground skyscraper, smart apartments
-            - Token: PKR 16,000/sq.ft., 737,633 sq.ft. total
-
-            2. Elements Residencia (Bahria Town Phase 8, Rawalpindi)
-            - Mixed-Use | Completion: 2026 | ROI: 30-40% annually
-            - Furnished serviced apartments, premium amenities
-            - Token: PKR 17,000/sq.ft., 215,000 sq.ft. total
-
-            3. Globe Residency (Naya Nazimabad, Karachi)
-            - Residential | Completion: 2025 | ROI: 15-25% annually
-            - 1,344 units across 9 towers, complete community
-            - Token: PKR 10,000/sq.ft.
-
-            4. Broad Peak Realty (DHA 1, Rawalpindi)
-            - Co-working | Completion: 2025 | ROI: 5% rental yield
-            - 380+ seats, premium business facilities
-            - Token: PKR 35,000/sq.ft., 21,000 sq.ft.
-
-            5. Akron (Bahria Town Phase 7, Rawalpindi)
-            - Co-working | Completed 2021 | ROI: 5% rental yield
-            - 100+ seats, modern workspace
-            - Token: PKR 27,500/sq.ft., 8,200 sq.ft.
-
-            6. Qube 101 (Divine Gardens, Lahore)
-            - Co-working | Completed 2022 | ROI: 5% rental yield
-            - 100+ seats, modern workspace
-            - Token: PKR 28,000/sq.ft., 10,000 sq.ft.
-
-            7. Amna Homes (Sector D1, DHA Bahawalpur)
-            - Residential | Completed 2027 | ROI: 2% rental yield
-            - 333 villas, premium amenities
-            - Token: PKR 9,200/sq.ft., 1,000 sq.ft.
-
-            **Core Guidelines:**
-
-            1. **Knowledge Base:** Use provided project details and general real estate knowledge only
-            2. **Consistency:** Maintain accuracy across responses, express uncertainty when needed
-            3. **Format:** Use clear Markdown formatting, tables for comparisons, bullet points for clarity
-            4. **Project Details:** Always include ROI, location, type, timeline, features, and investment metrics
-            5. **Value Focus:** Emphasize tokenization, fractional ownership, and returns
-            6. **Engagement:** Use natural conversation flow, ask relevant follow-up questions
-            7. **Problem Solving:** Provide concise summaries first, then details upon interest
-            8. **Innovation:** Highlight blockchain technology and modern investment approaches
-            9. Provide equally detailed responses about DAO PropTech's offerings in English or Urdu/Roman Urdu, maintaining consistency and using relevant Pakistani real estate terminology while adapting language to match the query while also pertaining to DAO PropTech and it's processes.
-            10. **Balanced Perspective:** When discussing potential challenges or disadvantages:
-                - Acknowledge legitimate concerns transparently
-                - Explain how DAO PropTech addresses these challenges
-                - Highlight the safeguards and solutions in place
-                - Frame challenges as opportunities for growth
-                - Emphasize the long-term benefits that outweigh short-term concerns
-
-            **Response Structure:**
-            - Start with direct answers to queries
-            - Support with specific project examples
-            - Include relevant metrics and data
-            - End with thoughtful, engaging questions
-            - Keep responses focused and value-driven
-            - Redirect unrelated queries to relevant offerings
-            - Maintain professional yet warm tone
-            - Match query language style (English/Roman Urdu)), use local real estate terms, include PKR values, and provide culturally relevant context for DAO PropTech and it's projects.
-
-            **Contact Details:**
-            - Email: info@daoproptech.com
-            - Phone: +92 310 0000326
-            - Website: https://daoproptech.com
-            - Office Address: 17-A, Business Bay, Sector F, DHA-1, Islamabad, Pakistan
-
-            Remember: Your goal is to inform and guide investors toward confident decisions about DAO Proptech's innovative real estate opportunities."""
+            self.system_message = get_system_prompt(Config.SIGNUP_URL)
 
             self.embeddings = OpenAIEmbeddings()
             self.vectordb = self._load_vectordb()
@@ -310,11 +238,17 @@ class RAG:
     def _extract_project_name(self, query: str) -> Optional[str]:
         """Extract and validate project name from query"""
         project_mapping = {
-            "urban dwellings": "Urban Dwellings",
             "elements residencia": "Elements Residencia",
-            "globe residency": "Globe Residency Apartments",
-            "broad peak": "Broad Peak Realty",
+            "elements": "Elements Residencia",
+            "urban dwellings": "Urban Dwellings",
+            "urban": "Urban Dwellings",
             "akron": "Akron",
+            "qubed": "Qubed Nathiagali",
+            "nathiagali": "Qubed Nathiagali",
+            "first avenue": "First Avenue Tower",
+            "craft bayview": "Craft Bayview Residency",
+            "craft": "Craft Bayview Residency",
+            "broad peak": "Broad Peak Realty",
         }
 
         if not query:
@@ -329,11 +263,17 @@ class RAG:
     def _get_project_names(self) -> dict:
         """Get all project names mapping"""
         return {
-            "urban dwellings": "Urban Dwellings",
             "elements residencia": "Elements Residencia",
-            "globe residency": "Globe Residency Apartments",
-            "broad peak": "Broad Peak Realty",
+            "elements": "Elements Residencia",
+            "urban dwellings": "Urban Dwellings",
+            "urban": "Urban Dwellings",
             "akron": "Akron",
+            "qubed": "Qubed Nathiagali",
+            "nathiagali": "Qubed Nathiagali",
+            "first avenue": "First Avenue Tower",
+            "craft bayview": "Craft Bayview Residency",
+            "craft": "Craft Bayview Residency",
+            "broad peak": "Broad Peak Realty",
         }
 
     async def generate_questions(self, context: str) -> list[str]:
@@ -447,6 +387,18 @@ class RAG:
         
         # Format context from relevant documents
         context = "\n\n".join(f"{doc.page_content}" for doc in docs)
+
+        # Optionally add fresh web results for current/market questions
+        if getattr(Config, "WEB_SEARCH_ENABLED", False) and self._needs_web(question):
+            try:
+                from .web_search import search_web
+                web = search_web(question)
+                if web:
+                    context += ("\n\nRECENT WEB RESULTS (use for market, industry, or latest-info "
+                                "questions; prefer the knowledge base for DAO PropTech platform and "
+                                "project facts):\n" + web)
+            except Exception as e:
+                logger.warning(f"web search skipped: {e}")
         
         # Include only recent conversation history (last 2 turns)
         recent_messages = memory.chat_memory.messages[-4:] if memory.chat_memory.messages else []
@@ -594,6 +546,19 @@ Please provide a clear, specific answer focusing on the relevant details.""")
             return "completion"
         return "general"
 
+    def _needs_web(self, question: str) -> bool:
+        """Heuristic: does this question want fresh or market information?"""
+        q = (question or "").lower()
+        signals = [
+            "latest", "today", "current", "currently", "right now", "this year",
+            "2025", "2026", "2027", "news", "recent", "trend", "market size",
+            "how big", "growth", "price of", "stock price", "update on",
+            "when will", "go public", "going public", "launch date", "live yet",
+            "worldwide", "globally", "other countries", "competitor",
+            "search the web", "look up", "google",
+        ]
+        return any(s in q for s in signals)
+
     def _get_or_create_memory(self, session_id: str) -> ConversationBufferMemory:
         """Get or create a conversation memory for a session"""
         if session_id not in self.memory_pools:
@@ -640,10 +605,20 @@ Please provide a clear, specific answer focusing on the relevant details.""")
             logger.info(f"Created new session with clean memory: {session_id}")
             return session_id
 
+    async def get_answer(self, question: str, session_id: str) -> str:
+        """Non-streaming answer for channels like WhatsApp. Collects the stream into one string."""
+        if session_id not in self.active_sessions:
+            await self.create_session(session_id)
+        parts = []
+        async for token in await self.stream_query(question, session_id):
+            if isinstance(token, str):
+                parts.append(token)
+        return "".join(parts).strip()
+
 
 # Create an instance of the RAG class with database session
 def get_rag_instance():
-    return RAG()  # No need to pass db_session anymore
+    return RAG(model_name=Config.MODEL_NAME)
 
 
 rag_instance = get_rag_instance()
