@@ -70,3 +70,17 @@ class SessionFeedback(Base):
 
     # Add relationship
     session = relationship("ChatSession", back_populates="session_feedback")
+
+
+class Lead(Base):
+    __tablename__ = "leads"
+    __table_args__ = {"schema": "chatbot"}
+
+    id = Column(Integer, primary_key=True)
+    phone = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    source = Column(String, nullable=True)          # whatsapp | website
+    intent = Column(String, nullable=True)          # income | growth | exploring | talk
+    project_interest = Column(String, nullable=True)
+    message = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
