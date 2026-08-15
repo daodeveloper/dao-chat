@@ -1,5 +1,5 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from .providers import get_embeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from typing import List, Optional, Dict
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 class DocumentProcessor:
     def __init__(self):
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = get_embeddings()
         
         # Create different splitters for different content types
         self.splitters = {
@@ -47,7 +47,7 @@ class DocumentProcessor:
         self.api_key = os.getenv("UNSTRUCTURED_API_KEY")
         self.api_url = os.getenv("UNSTRUCTURED_API_URL", "https://api.unstructured.io/general/v0/general")
         if not self.api_key:
-            raise ValueError("UNSTRUCTURED_API_KEY environment variable not set")
+            logger.warning("UNSTRUCTURED_API_KEY not set; PDF processing is unavailable (markdown and CSV still work)")
 
     def _cache_documents(self, documents: List[Document], cache_file: str) -> None:
         """Cache processed documents to file"""
