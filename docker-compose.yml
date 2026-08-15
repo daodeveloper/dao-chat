@@ -16,7 +16,6 @@ services:
       - EMBEDDINGS_PROVIDER=${EMBEDDINGS_PROVIDER:-openai}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
       - SIGNUP_URL=${SIGNUP_URL:-https://id.daoproptech.com}
-      - WATI_SHARED_SECRET=${WATI_SHARED_SECRET}
       - WEB_SEARCH_ENABLED=${WEB_SEARCH_ENABLED:-true}
       - TAVILY_API_KEY=${TAVILY_API_KEY}
     expose:
