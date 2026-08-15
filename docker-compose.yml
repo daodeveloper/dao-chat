@@ -14,7 +14,7 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - LLM_PROVIDER=${LLM_PROVIDER:-google}
       - EMBEDDINGS_PROVIDER=${EMBEDDINGS_PROVIDER:-google}
-      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}
       - WEB_SEARCH_ENABLED=${WEB_SEARCH_ENABLED:-true}
     expose:
       - "8080"
