@@ -15,5 +15,6 @@ class Config:
     LLM_PROVIDER = os.getenv("LLM_PROVIDER", "google")               # google | openai
     EMBEDDINGS_PROVIDER = os.getenv("EMBEDDINGS_PROVIDER", "openai")  # openai | google
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
-    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL", "models/gemini-embedding-001")
     USE_DB = os.getenv("USE_DB", "false").lower() == "true"   # false = run without any database
