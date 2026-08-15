@@ -98,25 +98,33 @@ class RAG:
             raise
 
     def _load_vectordb(self):
-        """Load the existing vector store"""
-        try:
-            if os.path.exists(Config.FAISS_INDEX_PATH):
-                vectordb = FAISS.load_local(
-                    Config.FAISS_INDEX_PATH,
-                    self.embeddings,
+        """Load the vector store; build it if missing. Never crash the app."""
+        def _try_load():
+            if os.path.exists(Config.FAISS_INDEX_PATH) and os.listdir(Config.FAISS_INDEX_PATH):
+                return FAISS.load_local(
+                    Config.FAISS_INDEX_PATH, self.embeddings,
                     allow_dangerous_deserialization=True,
                 )
-                logger.info(
-                    f"Loaded existing FAISS index from {Config.FAISS_INDEX_PATH}"
-                )
-                return vectordb
-            else:
-                raise FileNotFoundError(
-                    f"FAISS index not found at {Config.FAISS_INDEX_PATH}"
-                )
+            return None
+        try:
+            db = _try_load()
+            if db is not None:
+                logger.info(f"Loaded FAISS index from {Config.FAISS_INDEX_PATH}")
+                return db
         except Exception as e:
-            logger.error(f"Error loading vector store: {str(e)}")
-            raise
+            logger.error(f"Could not load FAISS index: {e}")
+        # Build it once from the markdown, then load.
+        try:
+            from .build_index_simple import build
+            build()
+            db = _try_load()
+            if db is not None:
+                logger.info("Built and loaded FAISS index")
+                return db
+        except Exception as e:
+            logger.error(f"Could not build FAISS index: {e}")
+        logger.warning("Running WITHOUT a vector store; answers will not use the knowledge base.")
+        return None
 
     def _create_prompt_template(self):
         # Simplified prompt template that focuses on the current context and question
@@ -569,6 +577,8 @@ Please provide a clear, specific answer focusing on the relevant details.""")
         self, question: str, query_type: str
     ) -> List[Document]:
         """Get relevant documents with caching"""
+        if self.vectordb is None:
+            return []
         try:
             logger.info(f"Searching for query: {question}")
             docs = self.vectordb.similarity_search(question, k=4)  # Get top 4 results
