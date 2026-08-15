@@ -1,33 +1,23 @@
-"""LLM and embeddings factory. Switch providers with env vars (see config.py).
-Default: Gemini for chat (free tier), OpenAI for embeddings (keeps the existing index).
-Set EMBEDDINGS_PROVIDER=google to go fully free (then rebuild the index)."""
+"""LLM and embeddings for the bot. Gemini only.
+
+Model names come from config (Config.GEMINI_MODEL / Config.EMBEDDINGS_MODEL) so they
+can be swapped with an env var when Google retires a model, without touching code.
+"""
 from .config import Config
 
 
 def get_embeddings():
-    if getattr(Config, "EMBEDDINGS_PROVIDER", "openai").lower() == "google":
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
-        return GoogleGenerativeAIEmbeddings(
-            model=getattr(Config, "EMBEDDINGS_MODEL", "models/gemini-embedding-001")
-        )
-    from langchain_openai import OpenAIEmbeddings
-    return OpenAIEmbeddings()
+    from langchain_google_genai import GoogleGenerativeAIEmbeddings
+    return GoogleGenerativeAIEmbeddings(
+        model=getattr(Config, "EMBEDDINGS_MODEL", "models/gemini-embedding-001")
+    )
 
 
 def get_chat_llm(streaming: bool = False):
-    provider = getattr(Config, "LLM_PROVIDER", "google").lower()
-    if provider == "google":
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(
-            model=getattr(Config, "GEMINI_MODEL", "gemini-2.5-flash"),
-            temperature=0,
-            max_output_tokens=8192,
-        )
-    from langchain_openai import ChatOpenAI
-    return ChatOpenAI(
+    # streaming is handled by calling .astream(); no constructor flag needed for Gemini.
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    return ChatGoogleGenerativeAI(
+        model=getattr(Config, "GEMINI_MODEL", "gemini-3.5-flash"),
         temperature=0,
-        model_name=getattr(Config, "MODEL_NAME", "gpt-4o-mini"),
-        streaming=streaming,
-        max_tokens=16000,
-        request_timeout=60,
+        max_output_tokens=8192,
     )
