@@ -1,20 +1,20 @@
-"""LLM and embeddings for the bot. Gemini only.
+"""LLM and embeddings for the bot.
 
-Model names come from config (Config.GEMINI_MODEL / Config.EMBEDDINGS_MODEL) so they
-can be swapped with an env var when Google retires a model, without touching code.
+Chat = Gemini (Google API). Embeddings = LOCAL (fastembed), so building and querying the
+knowledge index costs nothing and has no rate limit. Only the chat model uses Gemini quota.
+The chat model name comes from config so it can be swapped by env when Google retires one.
 """
 from .config import Config
 
 
 def get_embeddings():
-    from langchain_google_genai import GoogleGenerativeAIEmbeddings
-    return GoogleGenerativeAIEmbeddings(
-        model=getattr(Config, "EMBEDDINGS_MODEL", "models/gemini-embedding-001")
-    )
+    # Local, in-container embeddings. No API calls, no quota, no cost.
+    from langchain_community.embeddings import FastEmbedEmbeddings
+    return FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 
 
 def get_chat_llm(streaming: bool = False):
-    # streaming is handled by calling .astream(); no constructor flag needed for Gemini.
+    # streaming is handled via .astream(); no constructor flag needed for Gemini.
     from langchain_google_genai import ChatGoogleGenerativeAI
     return ChatGoogleGenerativeAI(
         model=getattr(Config, "GEMINI_MODEL", "gemini-3.5-flash"),
