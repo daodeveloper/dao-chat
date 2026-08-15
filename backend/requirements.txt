@@ -105,3 +105,4 @@ duckduckgo-search
 tavily-python
 langchain-google-genai
 python-frontmatter
+fastembed
