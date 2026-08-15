@@ -25,4 +25,4 @@ COPY data/ /app/data/
 
 RUN chmod -R 755 /app
 
-CMD ["sh", "-c", "python -m app.build_index_simple && uvicorn app.main:app --host 0.0.0.0 --port 8080"]
+CMD ["sh", "-c", "python -m app.build_index_simple ; uvicorn app.main:app --host 0.0.0.0 --port 8080"]
