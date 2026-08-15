@@ -7,7 +7,9 @@ from .config import Config
 def get_embeddings():
     if getattr(Config, "EMBEDDINGS_PROVIDER", "openai").lower() == "google":
         from langchain_google_genai import GoogleGenerativeAIEmbeddings
-        return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+        return GoogleGenerativeAIEmbeddings(
+            model=getattr(Config, "EMBEDDINGS_MODEL", "models/gemini-embedding-001")
+        )
     from langchain_openai import OpenAIEmbeddings
     return OpenAIEmbeddings()
 
@@ -17,7 +19,7 @@ def get_chat_llm(streaming: bool = False):
     if provider == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(
-            model=getattr(Config, "GEMINI_MODEL", "gemini-2.0-flash"),
+            model=getattr(Config, "GEMINI_MODEL", "gemini-2.5-flash"),
             temperature=0,
             max_output_tokens=8192,
         )
